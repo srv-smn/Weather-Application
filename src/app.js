@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express');
 const hbs = require('hbs')
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
   
 
 const app = express()
@@ -23,7 +25,7 @@ app.use(express.static(publicDirectoryPath))
 app.get('',(req,res) =>{
     res.render('index',{
         title:'Weather App',
-        name:'Srv Smn'
+        name:'Sourav Suman'
     })
 })
 
@@ -38,15 +40,41 @@ app.get('/help',(req,res) =>{
     res.render('help',{
         msg:'This is just a sample help message',
         title:'Help',
-        name:'Srv Smn'
+        name:'Sourav Suman'
     })
 })
 
 app.get('/weather',(req,res)=>{
-    res.send({
-        forecast:'acha mausam hai',
-        location:'Bksc'
+    if(!req.query.address){
+        return res.send({
+            error:'Please enter the search city'
+        })
+    }
+    ////
+
+    geocode(req.query.address,(error,{lati,longi,location}={}) =>{
+        if(error)
+        {
+            return res.send({
+                error
+            })
+        }
+        forecast(lati,longi,(error,forecastdata) =>{
+            if(error)
+            {
+                return res.send({
+                    error
+                })
+            }
+            res.send({
+                address: req.query.address,
+                forecast:forecastdata,
+                location:location
+            })
+
+        })
     })
+   
 })
 
 app.get('/help/*',(req,res)=>{
