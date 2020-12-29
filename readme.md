@@ -11,7 +11,7 @@
 
 **JS**
 
-**Handbreak(hbs)**
+**Handlebar(hbs)**
 
 Visit [ Deployment Page ](https://srvsmn-weather.herokuapp.com/)
 
